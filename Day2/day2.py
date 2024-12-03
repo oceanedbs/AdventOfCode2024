@@ -4,7 +4,7 @@ count_safe = 0
 
 # Read the data
 data = []
-with open('/home/dubois/Documents/Autre/AdventOfCode2024/Day2/data.csv', 'r') as file:
+with open('Day2/data.csv', 'r') as file:
     # Part 1: Process each line of the file
     for line in file:
         data.append(line.strip().split(' '))
