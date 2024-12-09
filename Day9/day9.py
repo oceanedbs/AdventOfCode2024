@@ -14,24 +14,25 @@ for k, char in enumerate(data):
         i+=1
     else:
         res += '.'*int(char)
-print(res)
+print(res[0:200])
+print(res[-200:-1])
 
 res_list = list(res)
 
-
+last_digit_index = len(res_list) - 1
 for i in range(0, len(res_list)):
-    not_placed = True
     if res_list[i] == '.':
-        last_digit = ''
-        for j in range(len(res_list) - 1, -1, -1):
-            if res_list[j].isdigit() and not_placed and i<j:
-                res_list[i] = res_list[j]
-                res_list[j] = '.'
+        not_placed = True
+        while last_digit_index > i and not_placed:
+            if res_list[last_digit_index].isdigit():
+                res_list[i] = res_list[last_digit_index]
+                res_list[last_digit_index] = '.'
                 not_placed = False
+            last_digit_index -= 1
                 
 
 result_string = ''.join(res_list)
-print(result_string)
+print(result_string[0:200])
 
 total=0
 for k, char in enumerate(res_list):
