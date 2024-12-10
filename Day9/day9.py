@@ -1,10 +1,13 @@
 from operator import itemgetter
+import numpy as np
+import matplotlib.pyplot as plt
 
-with open('Day9/data_test.txt', 'r') as file:
+with open('Day9/data.txt', 'r') as file:
     data = file.read()
 
 print(data)
 
+length = len(data)
 # Part 1
 
 i = 0
@@ -17,9 +20,22 @@ for k, char in enumerate(data):
     else:
         res.extend(['.'] * int(char))
 
-print(res[0:100])
+print(res[0:200])
 
+# Convert the list to a 2D array (heatmap)
+# heatmap_size = int(np.ceil(np.sqrt(len(res))))
+# heatmap = np.full((heatmap_size, heatmap_size), -1)
 
+# for idx, value in enumerate(res):
+#     row = idx // heatmap_size
+#     col = idx % heatmap_size
+#     heatmap[row, col] = -1 if value == '.' else int(value)
+
+# # Plot the heatmap
+# plt.imshow(heatmap, cmap='viridis', interpolation='nearest')
+# plt.colorbar()
+# plt.title('Heatmap of res')
+# plt.show()
 
 last_digit_index = len(res) - 1
 for i in range(0, len(res)):
@@ -45,49 +61,61 @@ for k, char in enumerate(res):
 print(total)
 
 
+# # Convert the list to a 2D array (heatmap)
+# heatmap_size = int(np.ceil(np.sqrt(len(res))))
+# heatmap = np.full((heatmap_size, heatmap_size), -1)
+
+# for idx, value in enumerate(res):
+#     row = idx // heatmap_size
+#     col = idx % heatmap_size
+#     heatmap[row, col] = -1 if value == '.' else int(value)
+
+# # Plot the heatmap
+# plt.imshow(heatmap, cmap='viridis', interpolation='nearest')
+# plt.colorbar()
+# plt.title('Heatmap of res')
+# plt.show()
+
 #Part 2
 
 
 def reconstruct_list(data_blocks) :
     #reconstruct the list based on the data_blocks
-    res = ['.'] * len(data)
+    res = ['.'] * ((length*2)+1)
     for db in data_blocks:
         res[db[2]:db[2] + db[1]] = [db[0]] * db[1]
     return res
 
 print('Part 2') 
-i = 0
-res = []
-data_blocks = []
-data_blanks = []
-for k, char in enumerate(data):
-    size = len(res)
-    if k % 2 == 0:
-        res.extend([i] * int(char))
-        data_blocks.append([i, int(char), size])        
-        i += 1
 
-    else:
-        res.extend(['.'] * int(char))
-        data_blanks.append([int(char), size])
-print(res)
+span_dict = {}
 
-print('blanks : ', data_blanks)
-print('blocks : ', data_blocks)
+free_spaces_array = np.array(list(map(int, list(data[1::2]))))
+print(free_spaces_array)
 
-for db in reversed(data_blocks):
-    for b in data_blanks:
-        if db[1] <= b[0]:
-            print('Change block', db, 'to blank', b)
-            db[2] = b[1]
-            b[0] = b[0] - db[1]
-            data_blocks = sorted(data_blocks, key=itemgetter(2))
-            print('Sorted blocks : ', data_blocks)
-            print(reconstruct_list(data_blocks))
-            break
-            
+line_array = list(map(int, list(data)))
+print(line_array)
 
-print('blanks : ', data_blanks)
-print('blocks : ', data_blocks)
+for file_id in range(len(data)-1, -1, -2):
+	cur_file_size = int(data[file_id])
 
+	free_spaces = np.argwhere(free_spaces_array[:file_id//2] >= cur_file_size)
 
+	if free_spaces.shape[0] == 0:
+		span_start = sum(line_array[:file_id])
+		span_dict[file_id//2] = list(range(span_start, span_start + int(data[file_id])))
+
+	else:
+		span_start = sum(line_array[:1+free_spaces[0, 0]*2])
+		span_dict[file_id//2] = list(range(span_start, span_start + int(data[file_id])))
+		free_spaces_array[free_spaces[0, 0]] -= int(data[file_id])
+		line_array[free_spaces[0, 0]*2] += int(data[file_id])
+		line_array[free_spaces[0, 0]*2 +1] -= int(data[file_id])
+
+		
+		
+checksum = 0
+for key in span_dict:
+	checksum += sum([mult * key for mult in span_dict[key]])
+
+print(checksum)
