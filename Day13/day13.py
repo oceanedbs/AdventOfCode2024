@@ -15,8 +15,8 @@ def parse_data(file_path):
         button_a_y = int(button_a[1].split('+')[1])
         button_b_x = int(button_b[0].split('+')[1])
         button_b_y = int(button_b[1].split('+')[1])
-        prize_x = int(prize[0].split('=')[1])
-        prize_y = int(prize[1].split('=')[1])
+        prize_x = int(prize[0].split('=')[1])+10000000000000
+        prize_y = int(prize[1].split('=')[1])+10000000000000
         
         results.append({
             'Button A': {'X': button_a_x, 'Y': button_a_y},
