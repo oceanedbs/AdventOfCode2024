@@ -13,6 +13,19 @@ def parse_content(content):
     
     return grid, rules[0]
 
+def print_grid(at_position, walls, objects):
+    for y, row in enumerate(grid):
+        for x, char in enumerate(row):
+            if (x, y) == at_position:
+                print('@', end='')
+            elif (x, y) in walls:
+                print('#', end='')
+            elif (x, y) in objects:
+                print('O', end='')
+            else:
+                print('.', end='')
+        print()
+
 if __name__ == "__main__":
     file_path = 'Day15/data_test.txt'
     content = read_file(file_path)
@@ -87,3 +100,15 @@ if __name__ == "__main__":
         
         print('Position :', at_position)
         print('Objects :', objects)
+        print_grid(at_position, walls, objects)
+
+    cost =0
+
+    for o in objects:
+        print(o)
+        print(o[0]+ 100*o[1])
+        cost += o[0]+ 100*o[1]
+    
+    print("Cost:", cost)
+
+        
